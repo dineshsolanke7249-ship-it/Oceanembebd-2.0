@@ -238,14 +238,24 @@ if st.button("🚀 Predict Ocean Temperature", use_container_width=True):
 
     with st.spinner("Running OceanEmbed AI model..."):
 
-        prediction = predict_temperature(
-            year=selected_date.year,
-            month=selected_date.month,
-            day=selected_date.day,
-            depth_m=selected_depth,
-            latitude=selected_lat,
-            longitude=selected_lon,
-        )
+        try:
+            prediction = predict_temperature(
+                year=selected_date.year,
+                month=selected_date.month,
+                day=selected_date.day,
+                depth_m=selected_depth,
+                latitude=selected_lat,
+                longitude=selected_lon,
+            )
+
+        except FileNotFoundError:
+            prediction = None
+        except FileNotFoundError:
+         prediction = None
+
+        except FileNotFoundError:
+         prediction = None
+        
 
     st.markdown(
         f"""
