@@ -261,7 +261,7 @@ if st.button("🚀 Predict Ocean Temperature", use_container_width=True):
         f"""
         <div class="result-card">
             <div class="label">Predicted Ocean Temperature</div>
-            <div class="prediction">{prediction:.2f} °C</div>
+          <div class="prediction">{prediction_display} °C</div>
             <div class="label">
                 {selected_depth:.1f} m depth ·
                 {selected_lat:.2f}°N ·
