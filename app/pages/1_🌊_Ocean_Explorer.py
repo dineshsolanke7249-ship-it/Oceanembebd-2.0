@@ -523,7 +523,6 @@ st.markdown(
     '<div class="section-title">5. Ocean temperature result</div>',
     unsafe_allow_html=True,
 )
-
 r1, r2, r3, r4 = st.columns(4)
 
 with r1:
@@ -531,13 +530,12 @@ with r1:
         f"""
         <div class="prediction">
             <div class="prediction-label">ML prediction</div>
-            <div class="prediction-value">{prediction:.2f}</div>
+            <div class="prediction-value">{f"{prediction:.2f}" if prediction is not None else "Unavailable"}</div>
             <div class="prediction-unit">degrees C</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-
 with r2:
     st.markdown(
         f"""
