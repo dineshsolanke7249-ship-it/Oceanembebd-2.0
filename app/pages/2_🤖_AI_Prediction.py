@@ -255,17 +255,38 @@ if st.button("🚀 Predict Ocean Temperature", use_container_width=True):
             prediction = None
 
 
+# ---------------------------------------------------------
+# COPERNICUS OBSERVATION
+# ---------------------------------------------------------
+
+observed_temperature = float(
+    ds["thetao"]
+    .sel(
+        time=selected_date,
+        depth=selected_depth,
+        latitude=selected_lat,
+        longitude=selected_lon,
+        method="nearest",
+    )
+    .values
+)
+
+
+# ---------------------------------------------------------
+# DISPLAY RESULTS
+# ---------------------------------------------------------
+
 if prediction is None:
     prediction_display = "Unavailable"
 else:
-    prediction_display = f"{prediction:.2f}"
+    prediction_display = f"{prediction:.2f} °C"
 
 
 st.markdown(
     f"""
     <div class="result-card">
-        <div class="label">Predicted Ocean Temperature</div>
-        <div class="prediction">{prediction_display} °C</div>
+        <div class="label">🤖 OceanEmbed AI Prediction</div>
+        <div class="prediction">{prediction_display}</div>
         <div class="label">
             {selected_depth:.1f} m depth ·
             {selected_lat:.2f}°N ·
@@ -277,6 +298,23 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+
+st.markdown(
+    f"""
+    <div class="result-card">
+        <div class="label">🌊 Copernicus Observation</div>
+        <div class="prediction">{observed_temperature:.2f} °C</div>
+        <div class="label">
+            Real Copernicus ocean temperature ·
+            {selected_depth:.1f} m depth ·
+            {selected_lat:.2f}°N ·
+            {selected_lon:.2f}°E ·
+            {selected_date}
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # ---------------------------------------------------------
 # EXPLANATION
