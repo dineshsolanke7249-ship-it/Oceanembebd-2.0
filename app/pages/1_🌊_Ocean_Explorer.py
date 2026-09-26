@@ -499,19 +499,22 @@ observed_temperature = float(
 # ============================================================
 # ML PREDICTION
 # ============================================================
+try:
+    prediction = predict_temperature(
+        year=selected_date.year,
+        month=selected_date.month,
+        day=selected_date.day,
+        depth_m=selected_depth,
+        latitude=selected_lat,
+        longitude=selected_lon,
+    )
 
-prediction = predict_temperature(
-    year=selected_date.year,
-    month=selected_date.month,
-    day=selected_date.day,
-    depth_m=selected_depth,
-    latitude=selected_lat,
-    longitude=selected_lon,
-)
+    difference = prediction - observed_temperature
 
-difference = prediction - observed_temperature
-
-
+except FileNotFoundError:
+    prediction = None
+    difference = None
+    st.warning("AI prediction is unavailable in the deployed version because the trained model is not included.")
 # ============================================================
 # RESULTS
 # ============================================================
@@ -668,24 +671,30 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-table_df = profile.copy()
-
-# Calculate an OceanEmbed prediction for every observed depth
-predictions = predict_temperature_batch(
-    year=selected_date.year,
-    month=selected_date.month,
-    day=selected_date.day,
-    depths=table_df["Depth (m)"].tolist(),
-    latitude=selected_lat,
-    longitude=selected_lon,
-)
-
-table_df["OceanEmbed Prediction (C)"] = predictions
-# Difference between Copernicus observation and OceanEmbed prediction
-table_df["Difference (C)"] = (
-    table_df["OceanEmbed Prediction (C)"]
-    - table_df["Temperature (C)"]
-)
+try:
+    predictions = predict_temperature_batch(
+        year=selected_date.year,
+        month=selected_date.month,
+        day=selected_date.day,
+        depths=table_df["Depth (m)"].tolist(),
+        latitude=selected_lat,
+        longitude=selected_lon,
+    )
+except FileNotFoundError:
+    predictions = None
+    st.warning(
+        "AI predictions are unavailable in the deployed version "
+        "because the trained model is not included."
+    )
+if predictions is not None:
+    table_df["OceanEmbed Prediction (C)"] = predictions
+    table_df["Difference (C)"] = (
+        table_df["OceanEmbed Prediction (C)"]
+        - table_df["Temperature (C)"]
+    )
+else:
+    table_df["OceanEmbed Prediction (C)"] = "Unavailable"
+    table_df["Difference (C)"] = "Unavailable"
 
 # Round values for display
 table_df["Depth (m)"] = table_df["Depth (m)"].round(3)
