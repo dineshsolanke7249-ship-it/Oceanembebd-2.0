@@ -234,6 +234,9 @@ st.markdown("---")
 # ---------------------------------------------------------
 # PREDICTION
 # ---------------------------------------------------------
+
+prediction = None
+
 if st.button("🚀 Predict Ocean Temperature", use_container_width=True):
 
     with st.spinner("Running OceanEmbed AI model..."):
@@ -250,28 +253,29 @@ if st.button("🚀 Predict Ocean Temperature", use_container_width=True):
 
         except FileNotFoundError:
             prediction = None
-        except FileNotFoundError:
-         prediction = None
 
-        except FileNotFoundError:
-         prediction = None
-        
 
-    st.markdown(
-        f"""
-        <div class="result-card">
-            <div class="label">Predicted Ocean Temperature</div>
-          <div class="prediction">{prediction_display} °C</div>
-            <div class="label">
-                {selected_depth:.1f} m depth ·
-                {selected_lat:.2f}°N ·
-                {selected_lon:.2f}°E ·
-                {selected_date}
-            </div>
+if prediction is None:
+    prediction_display = "Unavailable"
+else:
+    prediction_display = f"{prediction:.2f}"
+
+
+st.markdown(
+    f"""
+    <div class="result-card">
+        <div class="label">Predicted Ocean Temperature</div>
+        <div class="prediction">{prediction_display} °C</div>
+        <div class="label">
+            {selected_depth:.1f} m depth ·
+            {selected_lat:.2f}°N ·
+            {selected_lon:.2f}°E ·
+            {selected_date}
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 # ---------------------------------------------------------
