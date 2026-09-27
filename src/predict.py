@@ -5,7 +5,6 @@ import joblib
 import pandas as pd
 from huggingface_hub import hf_hub_download
 
-
 MODEL_FILE = Path("models/trained/temperature_model.joblib")
 
 HF_REPO_ID = "dineshsolanke/oceanembed-temperature-model"
@@ -24,16 +23,6 @@ _MODEL = None
 
 
 def get_hf_token():
-    """
-    Get the Hugging Face token.
-
-    Local development:
-        Uses HF_TOKEN environment variable if available.
-
-    Streamlit:
-        Uses HF_TOKEN from Streamlit secrets.
-    """
-
     token = os.getenv("HF_TOKEN")
 
     if token:
@@ -47,11 +36,6 @@ def get_hf_token():
 
 
 def get_model_path():
-    """
-    Use the local model when available.
-    Otherwise download the model from Hugging Face.
-    """
-
     if MODEL_FILE.exists():
         return MODEL_FILE
 
@@ -121,16 +105,3 @@ def predict_temperature_batch(
     })
 
     return model.predict(features)
-
-
-if __name__ == "__main__":
-    prediction = predict_temperature(
-        year=2022,
-        month=6,
-        day=1,
-        depth_m=10.0,
-        latitude=0.5,
-        longitude=60.5,
-    )
-
-    print(f"Predicted temperature: {prediction:.4f} C")
