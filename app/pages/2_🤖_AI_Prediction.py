@@ -251,11 +251,8 @@ if st.button("🚀 Predict Ocean Temperature", use_container_width=True):
                 latitude=selected_lat,
                 longitude=selected_lon,
             )
-
         except Exception as e:
          st.error(f"Prediction failed: {type(e).__name__}: {e}")
-    st.exception(e)
-    prediction = None
 
 
 # ---------------------------------------------------------
