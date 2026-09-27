@@ -252,8 +252,10 @@ if st.button("🚀 Predict Ocean Temperature", use_container_width=True):
                 longitude=selected_lon,
             )
 
-        except FileNotFoundError:
-            prediction = None
+        except Exception as e:
+         st.error(f"Prediction failed: {type(e).__name__}: {e}")
+    st.exception(e)
+    prediction = None
 
 
 # ---------------------------------------------------------
