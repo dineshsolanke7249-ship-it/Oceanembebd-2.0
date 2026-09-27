@@ -1,8 +1,15 @@
 from pathlib import Path
+import os
+
 import joblib
 import pandas as pd
+from huggingface_hub import hf_hub_download
+
 
 MODEL_FILE = Path("models/trained/temperature_model.joblib")
+
+HF_REPO_ID = "dineshsolanke/oceanembed-temperature-model"
+HF_MODEL_FILENAME = "temperature_model.joblib"
 
 FEATURES = [
     "year",
@@ -16,14 +23,56 @@ FEATURES = [
 _MODEL = None
 
 
+def get_hf_token():
+    """
+    Get the Hugging Face token.
+
+    Local development:
+        Uses HF_TOKEN environment variable if available.
+
+    Streamlit:
+        Uses HF_TOKEN from Streamlit secrets.
+    """
+
+    token = os.getenv("HF_TOKEN")
+
+    if token:
+        return token
+
+    try:
+        import streamlit as st
+        return st.secrets.get("HF_TOKEN")
+    except Exception:
+        return None
+
+
+def get_model_path():
+    """
+    Use the local model when available.
+    Otherwise download the model from Hugging Face.
+    """
+
+    if MODEL_FILE.exists():
+        return MODEL_FILE
+
+    token = get_hf_token()
+
+    return Path(
+        hf_hub_download(
+            repo_id=HF_REPO_ID,
+            filename=HF_MODEL_FILENAME,
+            repo_type="model",
+            token=token,
+        )
+    )
+
+
 def load_model():
     global _MODEL
 
     if _MODEL is None:
-        if not MODEL_FILE.exists():
-            raise FileNotFoundError(f"Model not found: {MODEL_FILE}")
-
-        _MODEL = joblib.load(MODEL_FILE)
+        model_path = get_model_path()
+        _MODEL = joblib.load(model_path)
 
     return _MODEL
 
