@@ -1,6 +1,5 @@
 from pathlib import Path
 import sys
-import os
 
 import streamlit as st
 import xarray as xr
@@ -9,21 +8,16 @@ import numpy as np
 import plotly.graph_objects as go
 
 
-sys.path.insert(
-    0,
-    os.path.dirname(
-        os.path.dirname(
-            os.path.abspath(__file__)
-        )
-    )
-)
+# Project root: Oceanembed 2.0
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-from src.predict import (
-    predict_temperature,
-    predict_temperature_batch,
-)
+# Add src/ directly to Python's import path
+SRC_DIR = PROJECT_ROOT / "src"
 
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
+from predict import predict_temperature, predict_temperature_batch
 # ============================================================
 # PAGE
 # ============================================================
