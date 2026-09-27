@@ -6,3 +6,4 @@ joblib
 xarray
 netCDF4
 plotly
+huggingface_hub
